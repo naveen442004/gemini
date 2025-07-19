@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITR Form Applicability Guide | AY 2025-26</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!--
+    Narrative & Structure Plan:
+    1.  Introduction: Hook with a clear title and a brief on the importance of selecting the correct ITR form.
+    2.  Decision Flowchart: A top-down, interactive-feeling flowchart to guide users through primary questions (e.g., "Are you an Individual?", "Do you have Business Income?") to narrow down their form choice. This will be the centerpiece.
+    3.  ITR for Individuals Deep Dive: A section with cards detailing the specifics of ITR-1, ITR-2, ITR-3, and ITR-4. This provides the 'why' behind the flowchart's conclusion.
+    4.  Form Complexity Visualization: A bar chart to visually represent that as income sources diversify, the ITR form's complexity increases.
+    5.  ITR for Entities: A clear, organized section for non-individual filers (ITR-5, ITR-6, ITR-7).
+    6.  At-a-Glance Summary: A final, comprehensive table summarizing all forms, their applicability, and key criteria.
+    7.  Conclusion: A note on due dates and a concluding remark.
+
+    Visualization Selection Plan:
+    * Data Point: The core decision-making process.
+        * Goal: Organize.
+        * Chosen Visualization: Flow Chart using structured HTML/CSS with Tailwind.
+        * Justification: This is the most intuitive way to guide a user through a set of conditional questions, mimicking a conversation with a tax consultant. It's built with divs and borders to strictly avoid SVG and Mermaid JS. (CONFIRMED: NO SVG).
+    * Data Point: Key Income Threshold (₹50 Lakhs for ITR-1/4).
+        * Goal: Inform.
+        * Chosen Visualization: Single Big Number.
+        * Justification: Large, bold text makes this critical number stand out and is easily digestible. Implemented with styled HTML. (CONFIRMED: NO SVG).
+    * Data Point: Increasing complexity across ITR forms for individuals.
+        * Goal: Compare.
+        * Chosen Visualization: Bar Chart (Chart.js).
+        * Justification: Visually demonstrates how the scope of each form grows, with ITR-1 being the simplest and ITR-3 being the most comprehensive for individuals with varied income sources. Implemented with Chart.js Canvas. (CONFIRMED: NO SVG).
+    * Data Point: Summary of all ITR forms and their filers.
+        * Goal: Organize.
+        * Chosen Visualization: Table.
+        * Justification: A table is the most efficient and clear method to present dense, structured reference information, mapping filers and conditions to the correct form. Implemented with HTML `<table>`. (CONFIRMED: NO SVG).
+    * Data Point: Categorization of different taxpayer types.
+        * Goal: Inform/Organize.
+        * Chosen Visualization: Icon-annotated lists.
+        * Justification: Simple Unicode characters provide quick visual cues for different taxpayer types (e.g., individual, company) without relying on image or SVG files. (CONFIRMED: NO SVG).
+
+    Explicit Confirmation:
+    NEITHER Mermaid JS NOR SVG were used anywhere in the output of this file. All diagrams were constructed using structured HTML and styled with Tailwind CSS, and all charts were rendered on HTML Canvas elements using Chart.js.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f6fa;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flowchart-node {
+            background-color: white;
+            border: 2px solid #3A6EA5;
+            color: #004E98;
+            font-weight: 600;
+        }
+        .flowchart-path {
+            background-color: #3A6EA5;
+        }
+        .flowchart-label {
+            background-color: #f0f6fa;
+            color: #3A6EA5;
+        }
+        .flowchart-leaf {
+            background-color: #004E98;
+            color: white;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="bg-[#f0f6fa]">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[#004E98]">Which ITR Form Is Right For You?</h1>
+            <p class="text-lg text-[#3A6EA5] mt-2">Your Complete Guide for Assessment Year 2025-26 (Financial Year 2024-25)</p>
+        </header>
+
+        <main>
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-[#004E98] text-center mb-2">Find Your Form: A Step-by-Step Guide</h2>
+                <p class="text-center text-[#3A6EA5] max-w-3xl mx-auto mb-8">Answer these simple questions to find the most likely ITR form for your needs. This guide covers the most common scenarios for individuals and entities.</p>
+
+                <div class="w-full max-w-5xl mx-auto p-4 md:p-6">
+                    <div class="flex flex-col items-center">
+                        <div class="flowchart-node text-center p-4 rounded-lg shadow-lg w-full md:w-3/4">
+                           Are you an Individual or a HUF?
+                        </div>
+                        <div class="w-1 h-8 flowchart-path"></div>
+                        
+                        <div class="flex w-full justify-around">
+                            <div class="text-sm font-bold flowchart-label px-4 py-1 rounded-full shadow-sm">YES</div>
+                            <div class="text-sm font-bold flowchart-label px-4 py-1 rounded-full shadow-sm">NO</div>
+                        </div>
+
+                        <div class="w-full h-1 flowchart-path my-2"></div>
+
+                        <div class="flex w-full justify-around items-start">
+                             <div class="flex flex-col items-center w-full md:w-1/2 px-2">
+                                <div class="w-1 h-4 flowchart-path"></div>
+                                <div class="flowchart-node text-center p-4 rounded-lg shadow-lg w-full">
+                                    Do you have income from Business or Profession?
+                                </div>
+                                <div class="w-1 h-8 flowchart-path"></div>
+                                <div class="flex w-full justify-around">
+                                    <div class="text-sm font-bold flowchart-label px-4 py-1 rounded-full shadow-sm">YES</div>
+                                    <div class="text-sm font-bold flowchart-label px-4 py-1 rounded-full shadow-sm">NO</div>
+                                </div>
+                                <div class="w-full h-1 flowchart-path my-2"></div>
+                                <div class="flex w-full justify-around items-start">
+                                    <div class="flex flex-col items-center w-1/2 px-2">
+                                        <div class="w-1 h-4 flowchart-path"></div>
+                                        <div class="flowchart-node text-center p-3 rounded-lg shadow-lg w-full text-sm">Is income computed under presumptive scheme (44AD, 44ADA, 44AE)?</div>
+                                        <div class="w-1 h-4 flowchart-path"></div>
+                                        <div class="flex w-full justify-around">
+                                            <div class="flex flex-col items-center"><span class="text-xs flowchart-label px-2 py-0.5 rounded-full">YES</span><div class="w-1 h-2 flowchart-path"></div><div class="flowchart-leaf text-center p-4 rounded-lg shadow-xl w-24">ITR-4</div></div>
+                                            <div class="flex flex-col items-center"><span class="text-xs flowchart-label px-2 py-0.5 rounded-full">NO</span><div class="w-1 h-2 flowchart-path"></div><div class="flowchart-leaf text-center p-4 rounded-lg shadow-xl w-24">ITR-3</div></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-center w-1/2 px-2">
+                                         <div class="w-1 h-4 flowchart-path"></div>
+                                        <div class="flowchart-node text-center p-3 rounded-lg shadow-lg w-full text-sm">Is total income up to ₹50 Lakhs from Salary, 1 House Property, Other Sources & Agri Income ≤ ₹5k?</div>
+                                        <div class="w-1 h-4 flowchart-path"></div>
+                                        <div class="flex w-full justify-around">
+                                            <div class="flex flex-col items-center"><span class="text-xs flowchart-label px-2 py-0.5 rounded-full">YES</span><div class="w-1 h-2 flowchart-path"></div><div class="flowchart-leaf text-center p-4 rounded-lg shadow-xl w-24">ITR-1</div></div>
+                                            <div class="flex flex-col items-center"><span class="text-xs flowchart-label px-2 py-0.5 rounded-full">NO</span><div class="w-1 h-2 flowchart-path"></div><div class="flowchart-leaf text-center p-4 rounded-lg shadow-xl w-24">ITR-2</div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center w-full md:w-1/2 px-2 mt-8 md:mt-0">
+                                <div class="w-1 h-4 flowchart-path"></div>
+                                <div class="flowchart-node text-center p-4 rounded-lg shadow-lg w-full">What is your entity type?</div>
+                                <div class="w-1 h-4 flowchart-path"></div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-4">
+                                    <div class="flex flex-col items-center"><div class="flowchart-leaf text-center p-4 rounded-lg shadow-xl w-full">ITR-5</div><p class="text-xs text-center mt-1 text-[#004E98] font-medium">Firm, LLP, AOP, BOI</p></div>
+                                    <div class="flex flex-col items-center"><div class="flowchart-leaf text-center p-4 rounded-lg shadow-xl w-full">ITR-6</div><p class="text-xs text-center mt-1 text-[#004E98] font-medium">Company</p></div>
+                                    <div class="flex flex-col items-center"><div class="flowchart-leaf text-center p-4 rounded-lg shadow-xl w-full">ITR-7</div><p class="text-xs text-center mt-1 text-[#004E98] font-medium">Trust, Political Party, etc.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="individuals" class="mb-16">
+                <h2 class="text-3xl font-bold text-[#004E98] text-center mb-8">ITR Forms for Individuals & HUFs</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-[#88BBD6] flex flex-col">
+                        <h3 class="font-bold text-2xl text-[#004E98]">ITR-1 (Sahaj)</h3>
+                        <p class="text-sm text-[#3A6EA5] mb-4">For Resident Individuals</p>
+                        <p class="text-4xl font-extrabold text-[#004E98]">≤ ₹50L</p>
+                        <p class="font-semibold text-slate-700 mb-4">Total Income</p>
+                        <ul class="space-y-2 text-sm text-slate-600 flex-grow">
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Salary/Pension</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> One House Property</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Other Sources (Interest, etc.)</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Agricultural Income ≤ ₹5,000</li>
+                            <li class="font-semibold text-blue-600">✔ LTCG u/s 112A ≤ ₹1.25 Lakh (New)</li>
+                            <li><span class="text-red-500 font-bold mr-2">✖</span> Director in a company</li>
+                            <li><span class="text-red-500 font-bold mr-2">✖</span> Held unlisted shares</li>
+                            <li><span class="text-red-500 font-bold mr-2">✖</span> Foreign income/assets</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-[#528AAE] flex flex-col">
+                        <h3 class="font-bold text-2xl text-[#004E98]">ITR-2</h3>
+                        <p class="text-sm text-[#3A6EA5] mb-4">For Individuals/HUFs without Business Income</p>
+                        <ul class="space-y-2 text-sm text-slate-600 mt-auto flex-grow pt-16">
+                            <li class="font-semibold text-slate-700">Use if ITR-1 is not applicable, and you have:</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Income > ₹50 Lakh</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> More than one House Property</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Capital Gains / Losses</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Foreign Income or Assets</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Status as Director or hold unlisted shares</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Agricultural Income > ₹5,000</li>
+                            <li><span class="text-red-500 font-bold mr-2">✖</span> No income from Business/Profession</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-[#3A6EA5] flex flex-col">
+                        <h3 class="font-bold text-2xl text-[#004E98]">ITR-3</h3>
+                        <p class="text-sm text-[#3A6EA5] mb-4">For Individuals/HUFs with Business Income</p>
+                         <ul class="space-y-2 text-sm text-slate-600 mt-auto flex-grow pt-16">
+                            <li class="font-semibold text-slate-700">Applicable if you have:</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Income from Business or Profession</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Any income source eligible for ITR-2</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Status as a partner in a firm</li>
+                            <li class="font-semibold text-slate-700 mt-4">This is the most comprehensive form for individuals, covering all possible income sources.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-[#004E98] flex flex-col">
+                        <h3 class="font-bold text-2xl text-[#004E98]">ITR-4 (Sugam)</h3>
+                        <p class="text-sm text-[#3A6EA5] mb-4">For Presumptive Income</p>
+                        <p class="text-4xl font-extrabold text-[#004E98]">≤ ₹50L</p>
+                        <p class="font-semibold text-slate-700 mb-4">Total Income</p>
+                        <ul class="space-y-2 text-sm text-slate-600 flex-grow">
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Resident Individual/HUF/Firm (not LLP)</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Business income u/s 44AD/44AE</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Professional income u/s 44ADA</li>
+                            <li><span class="text-green-500 font-bold mr-2">✔</span> Other incomes same as ITR-1</li>
+                            <li><span class="text-red-500 font-bold mr-2">✖</span> Director in a company</li>
+                            <li><span class="text-red-500 font-bold mr-2">✖</span> Held unlisted shares</li>
+                            <li><span class="text-red-500 font-bold mr-2">✖</span> Brought forward losses</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-16 bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                 <h2 class="text-3xl font-bold text-[#004E98] text-center mb-2">Visualizing Form Complexity</h2>
+                 <p class="text-center text-[#3A6EA5] max-w-3xl mx-auto mb-8">As your sources of income grow, the ITR form becomes more comprehensive. This chart shows the relative scope of each form for individuals and HUFs.</p>
+                <div class="chart-container">
+                    <canvas id="complexityChart"></canvas>
+                </div>
+            </section>
+
+            <section id="entities" class="mb-16">
+                <h2 class="text-3xl font-bold text-[#004E98] text-center mb-8">ITR Forms for Other Entities</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col border-t-4 border-[#528AAE]">
+                        <div class="text-center mb-4">
+                            <p class="text-5xl mb-3">🤝</p>
+                            <h3 class="font-bold text-2xl text-[#004E98]">ITR-5</h3>
+                        </div>
+                        <p class="text-sm text-slate-700 font-semibold mb-2">For entities like:</p>
+                        <ul class="space-y-2 text-sm text-slate-600 flex-grow">
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Firms & LLPs</li>
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Association of Persons (AOPs)</li>
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Body of Individuals (BOIs)</li>
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Business Trusts & Investment Funds</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-4">This form is for entities that cannot use ITR-1 through ITR-4 or ITR-7.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col border-t-4 border-[#3A6EA5]">
+                        <div class="text-center mb-4">
+                            <p class="text-5xl mb-3">🏢</p>
+                            <h3 class="font-bold text-2xl text-[#004E98]">ITR-6</h3>
+                        </div>
+                        <p class="text-sm text-slate-700 font-semibold mb-2">For Companies, except those claiming exemption u/s 11.</p>
+                        <ul class="space-y-2 text-sm text-slate-600 flex-grow">
+                           <li><span class="text-blue-600 font-bold mr-2">▪</span> Mandatory electronic filing with DSC.</li>
+                           <li class="font-semibold text-blue-600">▪ New Disclosures for AY 25-26:</li>
+                           <li class="ml-4"><span class="text-slate-500 mr-1">></span> ESG & CSR reporting details.</li>
+                           <li class="ml-4"><span class="text-slate-500 mr-1">></span> Details of accounting software with "audit trail".</li>
+                        </ul>
+                         <p class="text-xs text-slate-500 mt-4">Integrates tax compliance with corporate governance mandates.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col border-t-4 border-[#004E98]">
+                        <div class="text-center mb-4">
+                            <p class="text-5xl mb-3">🙏</p>
+                            <h3 class="font-bold text-2xl text-[#004E98]">ITR-7</h3>
+                        </div>
+                        <p class="text-sm text-slate-700 font-semibold mb-2">For entities filing under specific sections:</p>
+                        <ul class="space-y-2 text-sm text-slate-600 flex-grow">
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Sec 139(4A): Trusts (Charitable/Religious)</li>
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Sec 139(4B): Political Parties</li>
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Sec 139(4C): Scientific Research Assoc., News Agencies, Hospitals, etc.</li>
+                            <li><span class="text-blue-600 font-bold mr-2">▪</span> Sec 139(4D): Universities, Colleges</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-4">Focuses on detailed reporting to verify exemption conditions are met.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-[#004E98] text-center mb-8">Applicability at a Glance</h2>
+                 <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-[#004E98] uppercase bg-[#E0EFFF]">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">ITR Form</th>
+                                <th scope="col" class="px-6 py-3">Applicable For</th>
+                                <th scope="col" class="px-6 py-3">Key Conditions & Criteria</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4 font-bold text-[#004E98]">ITR-1</th>
+                                <td class="px-6 py-4">Resident Individuals</td>
+                                <td class="px-6 py-4">Total income ≤ ₹50 lakh from salary, one house property, other sources & agri income ≤ ₹5k. Not for directors or holders of unlisted shares.</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4 font-bold text-[#004E98]">ITR-2</th>
+                                <td class="px-6 py-4">Individuals & HUFs</td>
+                                <td class="px-6 py-4">No income from business/profession. Used for capital gains, foreign assets, multiple house properties, or if income > ₹50 lakh.</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4 font-bold text-[#004E98]">ITR-3</th>
+                                <td class="px-6 py-4">Individuals & HUFs</td>
+                                <td class="px-6 py-4">Have income from business/profession. Also covers all income types from ITR-2.</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4 font-bold text-[#004E98]">ITR-4</th>
+                                <td class="px-6 py-4">Resident Individuals, HUFs, Firms (other than LLP)</td>
+                                <td class="px-6 py-4">Total income ≤ ₹50 lakh with presumptive income u/s 44AD, 44ADA, or 44AE.</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4 font-bold text-[#004E98]">ITR-5</th>
+                                <td class="px-6 py-4">Firms, LLPs, AOPs, BOIs, etc.</td>
+                                <td class="px-6 py-4">For entities that cannot file ITR-1, 2, 3, 4, 6, or 7.</td>
+                            </tr>
+                             <tr class="bg-white border-b hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4 font-bold text-[#004E98]">ITR-6</th>
+                                <td class="px-6 py-4">Companies</td>
+                                <td class="px-6 py-4">For companies not claiming exemption under Section 11 (income from property for charitable/religious purposes).</td>
+                            </tr>
+                             <tr class="bg-white hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4 font-bold text-[#004E98]">ITR-7</th>
+                                <td class="px-6 py-4">Trusts, Political Parties, Institutions</td>
+                                <td class="px-6 py-4">For persons required to file return under Sec 139(4A), 139(4B), 139(4C), or 139(4D).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-16 pt-8 border-t border-[#88BBD6]">
+            <p class="text-[#3A6EA5]">This infographic is for informational purposes only. Always consult with a tax professional for advice specific to your situation.</p>
+            <p class="text-sm text-slate-500 mt-2">The due date for filing ITR for non-audit cases for AY 2025-26 has been extended to September 15, 2025. Please verify with official sources for any changes.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('complexityChart').getContext('2d');
+            const complexityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ITR-1', 'ITR-4', 'ITR-2', 'ITR-3'],
+                    datasets: [{
+                        label: 'Relative Scope & Complexity',
+                        data: [10, 25, 60, 100],
+                        backgroundColor: [
+                            '#88BBD6',
+                            '#528AAE',
+                            '#3A6EA5',
+                            '#004E98'
+                        ],
+                        borderColor: [
+                            '#FFFFFF'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                             ticks: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                             ticks: {
+                                color: '#004E98',
+                                font: {
+                                    size: 14,
+                                    weight: '600'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#004E98',
+                            titleFont: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            displayColors: false,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    if (Array.isArray(label)) {
+                                      return label.join(' ');
+                                    } else {
+                                      return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
